@@ -1,5 +1,9 @@
 .App {
+  position: relative;
   text-align: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: whitesmoke;
 }
 
 .App-logo {
@@ -35,4 +39,100 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.side1Off {
+  background-image: linear-gradient(to bottom, grey, #242424);
+}
+
+.side1On {
+  background-image: linear-gradient(to bottom, lightgreen, #02b290);
+}
+
+.side2Off {
+  background-image: linear-gradient(to bottom, grey, #242424);
+}
+
+.side2On {
+  background-image: linear-gradient(to bottom, lightskyblue, cyan);
+}
+
+.side1 {
+  transform: scale(-1, -1);
+  /* color: #000080; */
+  -moz-transform: scale(-1, -1);
+  -webkit-transform: scale(-1, -1);
+  -o-transform: scale(-1, -1);
+  -ms-transform: scale(-1, -1);
+  transform: scale(-1, -1);
+}
+
+.side1,
+.side2 {
+  height: 43vh;
+  justify-content: center;
+  align-content: center;
+  font-size: 40px;
+}
+
+.middleSide div {
+  align-content: center;
+}
+.middleSide {
+  height: 14vh;
+  padding: 20px;
+  vertical-align: middle;
+}
+
+.middleSide button {
+  vertical-align: bottom;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.timeout {
+  position: absolute;
+  background-color: grey;
+  width: 85vw;
+  height: 65vh;
+  left: 7vw;
+  top: 17vh;
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.timeout div {
+  justify-content: center;
+  align-content: center;
+  vertical-align: middle;
+  padding-top: 10vh;
+  color: white;
+  font-size: 45px;
+}
+
+.welcome {
+  position: absolute;
+  background-color: grey;
+  width: 85vw;
+  height: 65vh;
+  left: 7vw;
+  top: 17vh;
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.welcome .wrapperDiv {
+  justify-content: center;
+  align-content: center;
+  vertical-align: middle;
+  padding-top: 15vh;
+  color: white;
+}
+
+.welcome .title {
+  color: white;
+  font-size: 35px;
+}
+
+.welcome .msg {
+  color: yellow;
+  font-size: 20px;
 }
