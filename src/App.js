@@ -66,7 +66,7 @@ function App() {
   };
 
   const side1Click = () => {
-    if (who == PLAYER.Two) {
+    if (who === PLAYER.Two) {
       return;
     }
     clearInterval(interval1);
@@ -81,7 +81,7 @@ function App() {
   };
 
   const side2Click = () => {
-    if (who == PLAYER.One) {
+    if (who === PLAYER.One) {
       return;
     }
     clearInterval(interval1);
@@ -130,7 +130,7 @@ function App() {
     clearInterval(interval1);
 
     //start 1 min
-    setWho(who == PLAYER.One ? PLAYER.Two : PLAYER.One);
+    setWho(who === PLAYER.One ? PLAYER.Two : PLAYER.One);
     setTurnSeconds(59);
     const dat = new Date(Date.now() + 60000);
     const id2 = setInterval(() => getOneMinuteTime(dat), 1000);
@@ -149,22 +149,22 @@ function App() {
 
   useEffect(() => {
     if (
-      status == STAGE.Stopped ||
-      status == STAGE.Ended ||
-      status == STAGE.NotStarted
+      status === STAGE.Stopped ||
+      status === STAGE.Ended ||
+      status === STAGE.NotStarted
     ) {
       clearInterval(interval1);
       clearInterval(interval30);
     }
 
-    if (status == STAGE.Timeout) {
+    if (status === STAGE.Timeout) {
       clearInterval(interval1);
     }
 
     if (
-      status == STAGE.Stopped ||
-      status == STAGE.Ended ||
-      status == STAGE.Timeout
+      status === STAGE.Stopped ||
+      status === STAGE.Ended ||
+      status === STAGE.Timeout
     ) {
       dingSound.play();
     }
@@ -176,11 +176,11 @@ function App() {
     <div className='App'>
       <Container>
         <Row
-          className={`side1 ${who == PLAYER.One ? "side1On" : "side1Off"}`}
+          className={`side1 ${who === PLAYER.One ? "side1On" : "side1Off"}`}
           onClick={side1Click}>
           <Col>
             <div>
-              {who == PLAYER.One ? "00:" + formatNumber(turnSeconds) : "01:00"}
+              {who === PLAYER.One ? "00:" + formatNumber(turnSeconds) : "01:00"}
             </div>
           </Col>
         </Row>
@@ -197,11 +197,11 @@ function App() {
           </Col>
         </Row>
         <Row
-          className={`side2 ${who == PLAYER.One ? "side2Off" : "side2On"}`}
+          className={`side2 ${who === PLAYER.One ? "side2Off" : "side2On"}`}
           onClick={side2Click}>
           <Col>
             <div>
-              {who == PLAYER.One ? "01:00" : "00:" + formatNumber(turnSeconds)}
+              {who === PLAYER.One ? "01:00" : "00:" + formatNumber(turnSeconds)}
             </div>
           </Col>
         </Row>
@@ -232,7 +232,7 @@ function App() {
               D4t4 Solutions <br /> Chess Tournament 2022
             </span>
             <br />
-            {status == STAGE.Ended && (
+            {status === STAGE.Ended && (
               <div>
                 <hr />
                 <div className='msg'>GAME OVER!</div>
@@ -243,7 +243,7 @@ function App() {
                 </Button>
               </div>
             )}
-            {status == STAGE.Timeout && (
+            {status === STAGE.Timeout && (
               <div>
                 <hr />
                 <div className='msg'>Player-{who} Timed Out!</div>
@@ -258,7 +258,7 @@ function App() {
                 </Button>
               </div>
             )}
-            {status == STAGE.NotStarted && (
+            {status === STAGE.NotStarted && (
               <div>
                 <br />
                 <br />
@@ -267,7 +267,7 @@ function App() {
                 </Button>
               </div>
             )}
-            {status == STAGE.Stopped && (
+            {status === STAGE.Stopped && (
               <div>
                 <hr />
                 <div className='msg'>Game Stopped!</div>
