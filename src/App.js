@@ -172,6 +172,7 @@ function App() {
     // return () => clearInterval(interval);
   }, [
     status,
+    STAGE.Timeout,
     STAGE.Stopped,
     STAGE.Ended,
     STAGE.NotStarted,
