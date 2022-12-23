@@ -7,9 +7,6 @@ import { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 
 function App() {
-  var turnSound = new Audio("/turn.mp3");
-  var dingSound = new Audio("/ding.mp3");
-
   const STAGE = {
     NotStarted: 1,
     Started: 2,
@@ -76,8 +73,6 @@ function App() {
     const targetDate = new Date(Date.now() + 60000);
     const id = setInterval(() => getOneMinuteTime(targetDate), 500);
     setInterval1(id);
-
-    turnSound.play();
   };
 
   const side2Click = () => {
@@ -91,8 +86,6 @@ function App() {
     const targetDate = new Date(Date.now() + 60000);
     const id = setInterval(() => getOneMinuteTime(targetDate), 500);
     setInterval1(id);
-
-    turnSound.play();
   };
 
   const cancelClick = () => {
@@ -121,8 +114,6 @@ function App() {
     const dat = new Date(Date.now() + 60000);
     const id2 = setInterval(() => getOneMinuteTime(dat), 1000);
     setInterval1(id2);
-
-    turnSound.play();
   };
 
   const continueGame = () => {
@@ -135,8 +126,6 @@ function App() {
     const dat = new Date(Date.now() + 60000);
     const id2 = setInterval(() => getOneMinuteTime(dat), 1000);
     setInterval1(id2);
-
-    turnSound.play();
   };
 
   const formatNumber = (num) => {
@@ -159,14 +148,6 @@ function App() {
 
     if (status === STAGE.Timeout) {
       clearInterval(interval1);
-    }
-
-    if (
-      status === STAGE.Stopped ||
-      status === STAGE.Ended ||
-      status === STAGE.Timeout
-    ) {
-      dingSound.play();
     }
 
     // return () => clearInterval(interval);
