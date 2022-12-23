@@ -1,6 +1,4 @@
-import logo from "./logo.svg";
 import "./App.css";
-import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -9,16 +7,31 @@ import { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 
 function App() {
-  const [timedOut, setTimedOut] = useState(false);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
+  var turnSound = new Audio("/turn.mp3");
+  var dingSound = new Audio("/ding.mp3");
+
+  const STAGE = {
+    NotStarted: 1,
+    Started: 2,
+    Timeout: 3,
+    Ended: 4,
+    Stopped: 5,
+  };
+  const PLAYER = {
+    One: 1,
+    Two: 2,
+  };
+
+  const [status, setStatus] = useState(STAGE.NotStarted);
+  const [who, setWho] = useState(PLAYER.One);
+
   const [interval30, setInterval30] = useState(null);
   const [interval1, setInterval1] = useState(null);
   const [minutes, setMinutes] = useState(30);
   const [seconds, setSeconds] = useState(0);
   const [turnSeconds, setTurnSeconds] = useState(59);
-  const [player1, setPlayer1] = useState(true);
 
+  // for modal popup
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -30,7 +43,7 @@ function App() {
 
     if (Math.floor((time / 1000) % 60) <= 0) {
       clearInterval(interval1);
-      setTimedOut(true);
+      setStatus(STAGE.Timeout);
       setTurnSeconds(0);
     }
   };
@@ -46,36 +59,40 @@ function App() {
       Math.floor((time / 1000) % 60) <= 0
     ) {
       clearInterval(interval30);
-      setGameOver(true);
+      setStatus(STAGE.Ended);
       setMinutes(0);
       setSeconds(0);
     }
   };
 
   const side1Click = () => {
-    if (!player1) {
+    if (who == PLAYER.Two) {
       return;
     }
     clearInterval(interval1);
 
-    setPlayer1(false);
+    setWho(PLAYER.Two);
     setTurnSeconds(59);
     const targetDate = new Date(Date.now() + 60000);
     const id = setInterval(() => getOneMinuteTime(targetDate), 500);
     setInterval1(id);
+
+    turnSound.play();
   };
 
   const side2Click = () => {
-    if (player1) {
+    if (who == PLAYER.One) {
       return;
     }
     clearInterval(interval1);
 
-    setPlayer1(true);
+    setWho(PLAYER.One);
     setTurnSeconds(59);
     const targetDate = new Date(Date.now() + 60000);
     const id = setInterval(() => getOneMinuteTime(targetDate), 500);
     setInterval1(id);
+
+    turnSound.play();
   };
 
   const cancelClick = () => {
@@ -87,27 +104,39 @@ function App() {
     setSeconds(0);
     setTurnSeconds(59);
 
-    setGameStarted(false);
+    setStatus(STAGE.Stopped);
   };
   const startGame = () => {
-    setGameOver(false);
-    setGameStarted(true);
-    setTimedOut(false);
+    setStatus(STAGE.Started);
     clearInterval(interval1);
     clearInterval(interval30);
-
-    setPlayer1(true);
 
     const targetDate = new Date(Date.now() + 30 * 60000);
     const id = setInterval(() => getThirtyMinuteTime(targetDate), 1000);
     setInterval30(id);
 
     //start 1 min
-    setPlayer1(true);
+    setWho(PLAYER.One);
     setTurnSeconds(59);
     const dat = new Date(Date.now() + 60000);
     const id2 = setInterval(() => getOneMinuteTime(dat), 1000);
     setInterval1(id2);
+
+    turnSound.play();
+  };
+
+  const continueGame = () => {
+    setStatus(STAGE.Started);
+    clearInterval(interval1);
+
+    //start 1 min
+    setWho(who == PLAYER.One ? PLAYER.Two : PLAYER.One);
+    setTurnSeconds(59);
+    const dat = new Date(Date.now() + 60000);
+    const id2 = setInterval(() => getOneMinuteTime(dat), 1000);
+    setInterval1(id2);
+
+    turnSound.play();
   };
 
   const formatNumber = (num) => {
@@ -119,21 +148,40 @@ function App() {
   };
 
   useEffect(() => {
-    if (gameOver || timedOut || !gameStarted) {
+    if (
+      status == STAGE.Stopped ||
+      status == STAGE.Ended ||
+      status == STAGE.NotStarted
+    ) {
       clearInterval(interval1);
       clearInterval(interval30);
     }
+
+    if (status == STAGE.Timeout) {
+      clearInterval(interval1);
+    }
+
+    if (
+      status == STAGE.Stopped ||
+      status == STAGE.Ended ||
+      status == STAGE.Timeout
+    ) {
+      dingSound.play();
+    }
+
     // return () => clearInterval(interval);
-  }, [gameStarted, gameOver, timedOut]);
+  }, [status]);
 
   return (
     <div className='App'>
       <Container>
         <Row
-          className={`side1 ${player1 ? "side1On" : "side1Off"}`}
+          className={`side1 ${who == PLAYER.One ? "side1On" : "side1Off"}`}
           onClick={side1Click}>
           <Col>
-            <div>{player1 ? "00:" + formatNumber(turnSeconds) : "01:00"}</div>
+            <div>
+              {who == PLAYER.One ? "00:" + formatNumber(turnSeconds) : "01:00"}
+            </div>
           </Col>
         </Row>
         <Row className='middleSide'>
@@ -149,10 +197,12 @@ function App() {
           </Col>
         </Row>
         <Row
-          className={`side2 ${player1 ? "side2Off" : "side2On"}`}
+          className={`side2 ${who == PLAYER.One ? "side2Off" : "side2On"}`}
           onClick={side2Click}>
           <Col>
-            <div>{player1 ? "01:00" : "00:" + formatNumber(turnSeconds)}</div>
+            <div>
+              {who == PLAYER.One ? "01:00" : "00:" + formatNumber(turnSeconds)}
+            </div>
           </Col>
         </Row>
       </Container>
@@ -174,58 +224,57 @@ function App() {
           </Button>
         </Modal.Footer>
       </Modal>
-      {/* {timedOut && (
-        <div className='timeout'>
-          <div>
-            <span>Time up!</span>
-            <br />
-            <br />
-            <Button variant='primary' size='lg' onClick={cancelClick}>
-              Start Over?
-            </Button>
-            <br />
-            <Button variant='light' size='lg' onClick={cancelClick}>
-              &nbsp;RESUME?&nbsp;
-            </Button>
-          </div>
-        </div>
-      )} */}
 
-      {(!gameStarted || timedOut || gameOver) && (
+      {status != STAGE.Started && (
         <div className='welcome'>
           <div className='wrapperDiv'>
             <span className='title'>
               D4t4 Solutions <br /> Chess Tournament 2022
             </span>
             <br />
-            {gameOver && (
+            {status == STAGE.Ended && (
               <div>
                 <hr />
                 <div className='msg'>GAME OVER!</div>
                 <hr />
                 <br />
                 <Button variant='primary' size='lg' onClick={startGame}>
-                  Start Again
+                  Start Another Game
                 </Button>
               </div>
             )}
-            {timedOut && (
+            {status == STAGE.Timeout && (
               <div>
                 <hr />
-                <div className='msg'>Player Timed Out!</div>
+                <div className='msg'>Player-{who} Timed Out!</div>
                 <hr />
                 <br />
                 <Button variant='primary' size='lg' onClick={startGame}>
-                  Restart
+                  StartOver
+                </Button>
+                &nbsp; &nbsp;
+                <Button variant='warning' size='lg' onClick={continueGame}>
+                  Resume
                 </Button>
               </div>
             )}
-            {!gameStarted && (
+            {status == STAGE.NotStarted && (
               <div>
                 <br />
                 <br />
                 <Button variant='primary' size='lg' onClick={startGame}>
                   Start the Game
+                </Button>
+              </div>
+            )}
+            {status == STAGE.Stopped && (
+              <div>
+                <hr />
+                <div className='msg'>Game Stopped!</div>
+                <hr />
+                <br />
+                <Button variant='primary' size='lg' onClick={startGame}>
+                  Start Another Game
                 </Button>
               </div>
             )}
