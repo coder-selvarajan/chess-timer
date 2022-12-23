@@ -170,7 +170,15 @@ function App() {
     }
 
     // return () => clearInterval(interval);
-  }, [status]);
+  }, [
+    status,
+    STAGE.Stopped,
+    STAGE.Ended,
+    STAGE.NotStarted,
+    interval1,
+    interval30,
+    dingSound,
+  ]);
 
   return (
     <div className='App'>
@@ -225,7 +233,7 @@ function App() {
         </Modal.Footer>
       </Modal>
 
-      {status != STAGE.Started && (
+      {status !== STAGE.Started && (
         <div className='welcome'>
           <div className='wrapperDiv'>
             <span className='title'>
