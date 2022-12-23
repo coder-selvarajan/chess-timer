@@ -170,16 +170,7 @@ function App() {
     }
 
     // return () => clearInterval(interval);
-  }, [
-    status,
-    STAGE.Timeout,
-    STAGE.Stopped,
-    STAGE.Ended,
-    STAGE.NotStarted,
-    interval1,
-    interval30,
-    dingSound,
-  ]);
+  }, [status]);
 
   return (
     <div className='App'>
